@@ -1,0 +1,29 @@
+<DOCTYPE html>
+   <html lang="en">
+    <head>
+     <title>Basic Doodle Jump HTML CSS JAVA Game</title>
+     <style>
+        #playButton {
+         position: absolute;
+         left: 50%;
+         top: 50%;
+         transform: translate(-50%,-50%);
+         padding: 10px 20px;
+         font-size: 20px;
+         cursor: pointer;
+         display: block;
+        }
+        #gameCanvas {
+            display:none;
+        }
+     </style>
+     <link rel="stylesheet" href="style.css">
+    </head>
+   <script src="script.js"></script>
+    <body>
+        <button id="playButton">Играть</button>
+        <canvas id="gamecanvas" width="400" height="600"></canvas>
+        <div id="game"></div>
+        <script src="script.js"></script>
+    </body>
+    </html>
