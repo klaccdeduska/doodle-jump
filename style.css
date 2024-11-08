@@ -4,3 +4,16 @@ canvas {
     margin: 0;
 }
 
+button {
+    color: aqua;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+    display: block;
+    border-radius: 20px;
+}
