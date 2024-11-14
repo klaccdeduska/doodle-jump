@@ -1,96 +1,153 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-const parentEI = document.getElementById("parentEI");
+const playerImage = document.getElementById("Doodle-guy");
+const platformImage = document.getElementById("platform");
 
-
-var playerImage = document.createElement('img') ;
-playerImage.src = "doodler-guy.png";
-playerImage.alt = "doodler guy";
-parentEI.appendChild(img);
-var platformImage = document.createElement('img');
-platformImage.src = "platform.png";
-platformImage.alt = "platform"
+const platformWidth = 15;
+const platformHeight = 2.5;
 
 let player = {
     x: canvas.width / 2,
-    y: canvas.height - 50,
-    speedY: 0
+    y: canvas.height - 25,
+    width: 15,
+    height: 15,
+    speedY: 0,
+    gravity: 0.1,
+    jumpStrength: -2.99
 };
 
 let platforms = [];
-const platformCount = 5
+let gameStarted = false;
+let score = 0;
 
-function createPlatform(x, y) {
-    return {
-        x: x,
-        y: y,
+function createInitialPlatform() {
+    const platform = {
+        x: player.x - (platformWidth - player.width) / 2, // Выравниваем по центру игрока
+        y: player.y + player.height,                      // Платформа под игроком
         width: platformWidth,
         height: platformHeight,
     };
+    platforms.push(platform);
 }
 
+// Создаёт платформу на указанных координатах
+function createPlatform(x, y) {
+    return { x, y, width: platformWidth, height: platformHeight };
+}
+
+// Инициализация платформ
 function initPlatforms() {
-    for (let i = 0; i < platformCount; i++) {
+    for (let i = 0; i < 70; i++) {
         let x = Math.random() * (canvas.width - platformWidth);
-        let y = i * (canvas.height / platformCount);
+        let y = canvas.height - (i * 20);  // Равномерное размещение платформ снизу вверх
         platforms.push(createPlatform(x, y));
     }
 }
 
-function drawplatforms() {
+// Отрисовка платформ
+function drawPlatforms() {
     platforms.forEach(platform => {
-       ctx.drawImage(platformImage, platform.x, platform.y, platform.width, platform.height) 
+        ctx.drawImage(platformImage, platform.x, platform.y, platform.width, platform.height);
     });
-};
+}
 
-platformImage.onlload = function() {
-    initPlatforms();
-    update();
-};
+// Отрисовка игрока
+function drawPlayer() {
+    ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+}
 
-let x = 100;
-let y = 100;
-
+// Обновление игры
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    player.y += player.speedY;
-    ctx.drawImage(playerImage, x, y, 50, 50);
-    drawplatforms();
-    x += 1;
-    y += 1;
+
+    // Применяем гравитацию и обновляем позицию игрока только если игра началась
+    if (gameStarted) {
+        player.speedY += player.gravity;
+        player.y += player.speedY;
+    }
+
+    // Проверка столкновения с платформами
+    platforms.forEach(platform => {
+        if (
+            player.y + player.height >= platform.y &&
+            player.y + player.height <= platform.y + platform.height &&
+            player.x + player.width >= platform.x &&
+            player.x <= platform.x + platform.width
+        ) {
+            player.speedY = player.jumpStrength;  // Прыжок вверх при столкновении
+        }
+    });
+
+    // Если игрок поднимается выше середины экрана, сдвигаем все платформы вниз
+    if (player.y < canvas.height / 2) {
+        const displacement = canvas.height / 2 - player.y;
+        player.y = canvas.height / 2;
+
+        // Сдвигаем платформы вниз и создаём новые сверху
+        platforms.forEach(platform => platform.y += displacement);
+
+        // Удаляем платформы, вышедшие за нижний край экрана
+        platforms = platforms.filter(platform => platform.y < canvas.height);
+
+        // Добавляем новые платформы сверху
+        while (platforms.length < 5) {
+            let x = Math.random() * (canvas.width - platformWidth);
+            let y = -platformHeight;  // Новая платформа за верхним краем
+            platforms.push(createPlatform(x, y));
+        }
+
+        // Увеличиваем счёт за каждый пройденный сегмент
+        score += 10;
+        updateScoreDisplay();
+    }
+
+    drawPlayer();
+    drawPlatforms();
     requestAnimationFrame(update);
 }
-  
-playerImage.onload = function() {
-    initPlatforms();
-    update();
+
+// Обновление счёта
+function updateScoreDisplay() {
+    const scoreElement = document.getElementById("score");
+    scoreElement.textContent = `Score: ${score}`;
 }
 
 window.addEventListener("keydown", (event) => {
+    if (!gameStarted) return; // Игнорировать нажатия, если игра не началась
+
     switch (event.key) {
-      case "ArrowUp":
-        y -= 5;
-        break;
-      case "ArrowDown":
-        y += 5;
-        break;
-      case "Arrowleft":
-        x -= 5;
-        break;
-      case "ArrowRight":
-        x += 5;
-        break;
-    }   
+        case "ArrowUp":
+            player.y -= 5;
+            break;
+        case "ArrowDown":
+            player.y += 5;
+            break;
+        case "ArrowLeft":
+            player.x -= 5;
+            break;
+        case "ArrowRight":
+            player.x += 5;
+            break;
+    }
 });
 
-let score = 0;
-
-function increaseScore(points) {
-    score += points;
-    updateScoreDisplay();
+// Запуск игры
+function startGame() {
+    gameStarted = true;
+    player.speedY = player.jumpStrength;
+    update();
 }
 
-function updateScoreDisplay() {
-        const scoreElement = document.getElementById("score");
-        scoreElement.textContent = `score> ${score} `;    
+// Инициализация игры
+function initGame() {
+    createInitialPlatform();
+    initPlatforms();
+    drawPlayer();
+    drawPlatforms();
 }
+
+// Кнопка "Начать"
+document.getElementById("gameStarted").addEventListener("click", startGame);
+
+// Загружаем изображения и инициализируем игру
+playerImage.onload = platformImage.onload = initGame;
