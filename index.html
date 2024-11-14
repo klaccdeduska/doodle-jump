@@ -2,25 +2,27 @@
    <html lang="en">
     <head>
      <title>Basic Doodle Jump HTML CSS JAVA Game</title>
-     <style>
-        #gameCanvas {
-        display:none;
-        }
      </style>
      <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <button id="playButton" onclick="hideButton()">Играть</button>
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <button id="gameStarted" onclick="hideButton()">Играть</button>
+        <canvas id="gameCanvas"></canvas>
+
         <script>
             function hideButton() {
-                const button = document.getElementById("playButton") ;
+                const button = document.getElementById("gameStarted") ;
                 button.style.display = "none" ;
                 document.getElementById('gameCanvas')
             }
         </script>
+        <div id="score"></div>
         <div id="game"></div>
-        <div id="image-container"></div>
+        <div id="image-container">
+            <img id="Doodle-guy" src="https://raw.githubusercontent.com/kubowania/Doodle-Jump/refs/heads/master/doodler-guy.png">
+            <img id="platform" src="https://raw.githubusercontent.com/kubowania/Doodle-Jump/refs/heads/master/platform.png">
+            <img id="background" src="https://raw.githubusercontent.com/kubowania/Doodle-Jump/refs/heads/master/background.png">
+        </div>
         <script src="script.js"></script>
     </body>
     </html>
