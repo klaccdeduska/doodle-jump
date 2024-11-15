@@ -5,6 +5,7 @@ const platformImage = document.getElementById("platform");
 
 const platformWidth = 15;
 const platformHeight = 2.5;
+// Устанавливаются стандартные размеры платформ (ширина и высота).
 
 let player = {
     x: canvas.width / 2, // координаты игрока
@@ -12,8 +13,8 @@ let player = {
     width: 15,
     height: 15,
     speedY: 0, // вертикальная скорость игрока (для гравитации и прыжков).
-    gravity: 0.1,
-    jumpStrength: -2.99
+    gravity: 0.1, // сила гравитации (ускоряет падение игрока).
+    jumpStrength: -2.99 // сила, с которой игрок отталкивается от платформ.
 };
 
 let platforms = [];
