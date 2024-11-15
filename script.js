@@ -1,7 +1,9 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+// canvas - элемент для рисования. ctx - засчёт чего мы рисуем.
 const playerImage = document.getElementById("Doodle-guy");
 const platformImage = document.getElementById("platform");
+// изображения для игрока и платформ.
 
 const platformWidth = 15;
 const platformHeight = 2.5;
