@@ -21,9 +21,10 @@ let player = {
 
 let platforms = [];
 // platforms — вещь, хранящая все платформы в игре
-let gameStarted = false;
-let score = 0;
+let gameStarted = false; // вещь, показывающая, началась ли игра.
+let score = 0; // счёт игрока.
 
+ // Создаётся начальная платформа под игроком, чтобы он не падал сразу.
 function createInitialPlatform() {
     const platform = {
         x: player.x - (platformWidth - player.width) / 2, // Выравниваем по центру игрока
