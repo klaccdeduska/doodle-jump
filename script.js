@@ -11,7 +11,7 @@ let player = {
     y: canvas.height - 25, // координаты игрока
     width: 15,
     height: 15,
-    speedY: 0,
+    speedY: 0, // вертикальная скорость игрока (для гравитации и прыжков).
     gravity: 0.1,
     jumpStrength: -2.99
 };
