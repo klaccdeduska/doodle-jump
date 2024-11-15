@@ -20,6 +20,7 @@ let player = {
 };
 
 let platforms = [];
+// platforms — вещь, хранящая все платформы в игре
 let gameStarted = false;
 let score = 0;
 
