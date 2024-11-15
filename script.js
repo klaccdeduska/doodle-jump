@@ -7,8 +7,8 @@ const platformWidth = 15;
 const platformHeight = 2.5;
 
 let player = {
-    x: canvas.width / 2,
-    y: canvas.height - 25,
+    x: canvas.width / 2, // координаты игрока
+    y: canvas.height - 25, // координаты игрока
     width: 15,
     height: 15,
     speedY: 0,
