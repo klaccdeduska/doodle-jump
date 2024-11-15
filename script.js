@@ -43,6 +43,7 @@ function createPlatform(x, y) {
 // Инициализация платформ
 function initPlatforms() {
     for (let i = 0; i < 70; i++) {
+// Генерируются 70 платформ на случайных горизонтальных позициях.
         let x = Math.random() * (canvas.width - platformWidth);
         let y = canvas.height - (i * 20);  // Равномерное размещение платформ снизу вверх
         platforms.push(createPlatform(x, y));
