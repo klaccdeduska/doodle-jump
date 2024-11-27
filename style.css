@@ -38,3 +38,34 @@ body {
 img {
     display: none;
 }
+#gameOverScreen {
+    display: none; /* Скрыто по умолчанию */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 200%;
+    background: rgba(0, 0, 0, 0.8); /* Тёмный полупрозрачный фон */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameOverScreen button {
+    color: aqua;
+    background-color: black;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    padding: 10px 20px;
+    font-size: 74px;
+    cursor: pointer;
+    display: block;
+    border-radius: 20px;
+    width: 600px;
+    height: 180px;
+    box-shadow: 0px 4px 6px rgba(21, 235, 103, 0.2);
+}
