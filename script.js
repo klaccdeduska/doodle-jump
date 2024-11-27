@@ -1,30 +1,49 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-// canvas - элемент для рисования. ctx - засчёт чего мы рисуем.
 const playerImage = document.getElementById("Doodle-guy");
 const platformImage = document.getElementById("platform");
-// изображения для игрока и платформ.
+const url = "https://kool.krister.ee/chat/doodle-jump";
+const backgroundMusic = new Audio("backround-music.mp3");
+const jumpSound = new Audio("jumpSound.mp3");
+const gameOverSound = new Audio("gameOverSound.mp3");
+backgroundMusic.volume = 0.5;
+jumpSound.volume = 0.2; // Устанавливаем громкость (от 0 до 1)
+gameOverSound.volume = 0.2;
+
+async function sendScoreToServer() {
+    const playerData = {
+        name: userName,   // Имя игрока
+        score: score      // Счёт игрока
+    };
+
+    await fetch(url, {
+        method: "POST", // Отправка данных на сервер
+        headers: {
+            "Content-Type": "application/json" // Указываем, что отправляем данные в JSON-формате
+        },
+        body: JSON.stringify(playerData) // Преобразуем объект в JSON строку
+    });
+}
 
 const platformWidth = 15;
 const platformHeight = 2.5;
-// Устанавливаются стандартные размеры платформ (ширина и высота).
 
 let player = {
-    x: canvas.width / 2, // координаты игрока
-    y: canvas.height - 25, // координаты игрока
+    x: canvas.width / 2,
+    y: canvas.height - 25,
     width: 15,
     height: 15,
-    speedY: 0, // вертикальная скорость игрока (для гравитации и прыжков).
-    gravity: 0.08, // сила гравитации (ускоряет падение игрока).
-    jumpStrength: -2.99 // сила, с которой игрок отталкивается от платформ.
+    speedY: 0,
+    gravity: 0.08,
+    jumpStrength: -2.99
 };
 
 let platforms = [];
-// platforms — вещь, хранящая все платформы в игре
-let gameStarted = false; // вещь, показывающая, началась ли игра.
-let score = 0; // счёт игрока.
+let gameOver = false;
+let gameStarted = false;
+let score = 0;
+let userName = prompt("Enter your name");
 
- // Создаётся начальная платформа под игроком, чтобы он не падал сразу.
 function createInitialPlatform() {
     const platform = {
         x: player.x - (platformWidth - player.width) / 2, // Выравниваем по центру игрока
@@ -43,7 +62,6 @@ function createPlatform(x, y) {
 // Инициализация платформ
 function initPlatforms() {
     for (let i = 0; i < 70; i++) {
-// Генерируются 70 платформ на случайных горизонтальных позициях.
         let x = Math.random() * (canvas.width - platformWidth);
         let y = canvas.height - (i * 20);  // Равномерное размещение платформ снизу вверх
         platforms.push(createPlatform(x, y));
@@ -62,9 +80,50 @@ function drawPlayer() {
     ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
 
+function checkGameOver() {
+    if (player.y > canvas.height) {
+        endGame();
+    }
+}
+
+function endGame() {
+    gameOver = true;
+    gameStarted = false;
+    document.getElementById("gameOverScreen").style.display = "flex";
+    sendScoreToServer();
+    backgroundMusic.pause();  // Останавливаем фоновую музыку
+    gameOverSound.play();  // Запуск звука окончания игры
+    cancelAnimationFrame(update); // Останавливаем обновление игры
+}
+
+function retryGame() {
+    gameOver = false;
+    score = 0;
+    player = {
+        x: canvas.width / 2,
+        y: canvas.height - 25,
+        width: 15,
+        height: 15,
+        speedY: 0,
+        gravity: 0.08,
+        jumpStrength: -2.99
+    };
+    platforms = [];
+    createInitialPlatform();
+    initPlatforms();
+    updateScoreDisplay();
+    document.getElementById("gameOverScreen").style.display = "none";
+    backgroundMusic.currentTime = 0;  // Устанавливаем время воспроизведения в 0 (сначала)
+    backgroundMusic.play();  // Запуск музыки с начала
+    startGame();
+}
+
+document.getElementById("retryButton").addEventListener("click", retryGame);
+
 // Обновление игры
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (gameOver) return; // Остановить обновление, если игра окончена
 
     // Применяем гравитацию и обновляем позицию игрока только если игра началась
     if (gameStarted) {
@@ -81,6 +140,7 @@ function update() {
             player.x <= platform.x + platform.width
         ) {
             player.speedY = player.jumpStrength;  // Прыжок вверх при столкновении
+            jumpSound.play();  // Воспроизведение звука прыжка
         }
     });
 
@@ -109,7 +169,9 @@ function update() {
 
     drawPlayer();
     drawPlatforms();
-    requestAnimationFrame(update);
+    checkGameOver(); // Проверка на завершение игры
+
+    if (!gameOver) requestAnimationFrame(update); // Вызываем только один раз
 }
 
 // Обновление счёта
@@ -119,21 +181,32 @@ function updateScoreDisplay() {
 }
 
 window.addEventListener("keydown", (event) => {
-    if (!gameStarted) return; // Игнорировать нажатия, если игра не началась
+    if (gameOver) {
+        // Если игра закончена, можно нажимать "R" для перезапуска игры
+        if (event.key === "r" || event.key === "R") {
+            retryGame();
+        }
+    } else if (event.key === "p" || event.key === "P") {  
+        // Если игра не началась, можно нажимать "P" для начала игры
+        startGame();
+    }
 
-    switch (event.key) {
-        case "ArrowUp":
-            player.y -= 5;
-            break;
-        case "ArrowDown":
-            player.y += 5;
-            break;
-        case "ArrowLeft":
-            player.x -= 5;
-            break;
-        case "ArrowRight":
-            player.x += 5;
-            break;
+    // Управление движением игрока
+    if (gameStarted) {
+        switch (event.key) {
+            case "ArrowUp":
+                player.y -= 5;
+                break;
+            case "ArrowDown":
+                player.y += 5;
+                break;
+            case "ArrowLeft":
+                player.x -= 5;
+                break;
+            case "ArrowRight":
+                player.x += 5;
+                break;
+        }
     }
 });
 
@@ -142,6 +215,8 @@ function startGame() {
     gameStarted = true;
     player.speedY = player.jumpStrength;
     update();
+    backgroundMusic.play();
+    document.getElementById("gameStarted").style.display = "none"; 
 }
 
 // Инициализация игры
@@ -150,6 +225,8 @@ function initGame() {
     initPlatforms();
     drawPlayer();
     drawPlatforms();
+    document.getElementById("gameOverScreen").style.display = "none"; // Скрываем экран
+    gameOver = false; // Сбрасываем статус Game Over
 }
 
 // Кнопка "Начать"
