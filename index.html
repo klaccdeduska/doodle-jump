@@ -6,9 +6,20 @@
      <link rel="stylesheet" href="style.css">
     </head>
     <body>
+        <audio id="backgroundMusic" loop>
+            <source src="backround-music.mp3" type="audio/mp3">
+        </audio>
+        <audio id="jumpSound" loop>
+            <source src="jumpSound.mp3" type="audio/mp3">
+        </audio>
+        <audio id="gameOverSound" loop>
+            <source src="gameOverSound.mp3" type="audio/mp3">
+        </audio>
         <button id="gameStarted" onclick="hideButton()">Играть</button>
         <canvas id="gameCanvas"></canvas>
-
+        <div id="gameOverScreen">
+            <button id="retryButton">Заново</button>
+        </div>
         <script>
             function hideButton() {
                 const button = document.getElementById("gameStarted") ;
