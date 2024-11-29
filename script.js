@@ -10,6 +10,21 @@ backgroundMusic.volume = 0.5;
 jumpSound.volume = 0.2; // Устанавливаем громкость (от 0 до 1)
 gameOverSound.volume = 0.2;
 
+async function fetchScore() {
+    let Highscore = 0;
+    const response = await fetch(url);
+    const data = await response.json();
+    const element = document.querySelector("#hiscore");
+
+    for (const item of data) {
+        const ns = item.score;
+        if (Highscore < ns) {
+            Highscore = item.score;
+        }
+    }
+    element.innerHTML = "<p>" + "High score: " + Highscore + "</p>";
+}
+
 async function sendScoreToServer() {
     const playerData = {
         name: userName,   // Имя игрока
@@ -120,6 +135,8 @@ function retryGame() {
 
 document.getElementById("retryButton").addEventListener("click", retryGame);
 
+let move = 0
+
 // Обновление игры
 function update() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -144,6 +161,8 @@ function update() {
         }
     });
 
+    player
+
     // Если игрок поднимается выше середины экрана, сдвигаем все платформы вниз
     if (player.y < canvas.height / 2) {
         const displacement = canvas.height / 2 - player.y;
@@ -167,6 +186,7 @@ function update() {
         updateScoreDisplay();
     }
 
+    player.x += move
     drawPlayer();
     drawPlatforms();
     checkGameOver(); // Проверка на завершение игры
@@ -180,13 +200,15 @@ function updateScoreDisplay() {
     scoreElement.textContent = `Score: ${score}`;
 }
 
+
+
 window.addEventListener("keydown", (event) => {
     if (gameOver) {
         // Если игра закончена, можно нажимать "R" для перезапуска игры
         if (event.key === "r" || event.key === "R") {
             retryGame();
         }
-    } else if (event.key === "p" || event.key === "P") {  
+    } else if (event.key === "p" || event.key === "P") {
         // Если игра не началась, можно нажимать "P" для начала игры
         startGame();
     }
@@ -194,29 +216,27 @@ window.addEventListener("keydown", (event) => {
     // Управление движением игрока
     if (gameStarted) {
         switch (event.key) {
-            case "ArrowUp":
-                player.y -= 5;
-                break;
-            case "ArrowDown":
-                player.y += 5;
-                break;
             case "ArrowLeft":
-                player.x -= 5;
+                move = -2;
                 break;
             case "ArrowRight":
-                player.x += 5;
+                move = 2;
                 break;
         }
     }
 });
+window.addEventListener("keyup", (event) => {
+    move = 0
+});
 
 // Запуск игры
 function startGame() {
+    fetchScore();
     gameStarted = true;
     player.speedY = player.jumpStrength;
     update();
     backgroundMusic.play();
-    document.getElementById("gameStarted").style.display = "none"; 
+    document.getElementById("gameStarted").style.display = "none";
 }
 
 // Инициализация игры
