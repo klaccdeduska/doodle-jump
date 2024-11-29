@@ -35,6 +35,13 @@ body {
     border-radius: 20px;  
     background-color: rgb(81, 209, 31);
 }
+#hiscore {
+    position: absolute;
+    top: 140px;
+    font-size: 100px;
+    border-radius: 20px;  
+    background-color: rgb(209, 117, 31);
+}
 img {
     display: none;
 }
