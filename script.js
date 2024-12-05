@@ -6,6 +6,7 @@ const url = "https://kool.krister.ee/chat/doodle-jump";
 const backgroundMusic = new Audio("backround-music.mp3");
 const jumpSound = new Audio("jumpSound.mp3");
 const gameOverSound = new Audio("gameOverSound.mp3");
+document.addEventListener("DOMContentLoaded", () => {
 const leftControl = document.getElementById("left-control");
 const rightControl = document.getElementById("right-control");
 backgroundMusic.volume = 0.5;
