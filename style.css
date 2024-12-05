@@ -76,3 +76,19 @@ img {
     height: 180px;
     box-shadow: 0px 4px 6px rgba(21, 235, 103, 0.2);
 }
+.control-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 50%;
+    z-index: 100; /* Поверх игры */
+    background-color: rgba(0, 0, 0, 0); /* Прозрачный */
+}
+
+#left-control {
+    left: 0;
+}
+
+#right-control {
+    right: 0;
+}
