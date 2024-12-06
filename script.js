@@ -6,7 +6,6 @@ const url = "https://kool.krister.ee/chat/doodle-jump";
 const backgroundMusic = new Audio("backround-music.mp3");
 const jumpSound = new Audio("jumpSound.mp3");
 const gameOverSound = new Audio("gameOverSound.mp3");
-document.addEventListener("DOMContentLoaded", () => {
 const leftControl = document.getElementById("left-control");
 const rightControl = document.getElementById("right-control");
 backgroundMusic.volume = 0.5;
@@ -141,35 +140,6 @@ function retryGame() {
 document.getElementById("retryButton").addEventListener("click", retryGame);
 
 let move = 0
-
-function startMoving(direction) {
-    move = direction;
-    if (!touchInterval) {
-        touchInterval = setInterval(() => {
-            player.x += move;
-        }, 16); // Движение каждые 16 мс (~60 FPS)
-    }
-}
-
-function stopMoving() {
-    move = 0;
-    clearInterval(touchInterval);
-    touchInterval = null;
-}
-
-// Левый контроль
-leftControl.addEventListener("touchstart", () => startMoving(-2));
-leftControl.addEventListener("touchend", stopMoving);
-
-// Правый контроль
-rightControl.addEventListener("touchstart", () => startMoving(2));
-rightControl.addEventListener("touchend", stopMoving);
-
-// Для поддержки мыши (тестирование на ПК)
-leftControl.addEventListener("mousedown", () => startMoving(-2));
-leftControl.addEventListener("mouseup", stopMoving);
-rightControl.addEventListener("mousedown", () => startMoving(2));
-rightControl.addEventListener("mouseup", stopMoving);
 
 // Обновление игры
 function update() {
