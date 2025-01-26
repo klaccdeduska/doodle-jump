@@ -219,10 +219,10 @@ window.addEventListener("keydown", (event) => {
     if (gameStarted) {
         switch (event.key) {
             case "ArrowLeft":
-                move = -2;
+                move = -1;
                 break;
             case "ArrowRight":
-                move = 2;
+                move = 1;
                 break;
         }
     }
